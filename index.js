@@ -16,10 +16,11 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("DB Connetion Successfull");
+    console.log("DB Connection Successful");
   })
   .catch((err) => {
-    console.log("DB Connection Failed");
+    console.error("DB Connection Failed");
+    console.error(err);
   });
 
 app.use("/api/auth", authRoutes);
@@ -28,6 +29,7 @@ app.use("/api/messages", messageRoutes);
 const server = app.listen(process.env.PORT, () =>
   console.log(`Server started on ${process.env.PORT}`)
 );
+
 const io = socket(server, {
   cors: {
     origin: process.env.CLIENT_URL,
@@ -36,6 +38,7 @@ const io = socket(server, {
 });
 
 global.onlineUsers = new Map();
+
 io.on("connection", (socket) => {
   global.chatSocket = socket;
   socket.on("add-user", (userId) => {
